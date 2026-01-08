@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { readStreamableValue } from "ai/rsc";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -19,7 +17,6 @@ import { PersonaCard } from "@/components/session/PersonaCard";
 import { SessionControls } from "@/components/session/SessionControls";
 
 export default function SessionPage() {
-  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
 
@@ -30,7 +27,6 @@ export default function SessionPage() {
     addUserMessage,
     addAssistantMessage,
     updateTraits,
-    isActive,
   } = useSession();
 
   const {
@@ -83,36 +79,33 @@ export default function SessionPage() {
           },
         ];
 
-        const { stream, getResult } = await continueConversation(
+        // Show loading indicator
+        setStreamingContent("...");
+
+        const result = await continueConversation(
           allMessages,
           session.persona
         );
 
-        // Stream the response
-        let accumulatedContent = "";
-        for await (const chunk of readStreamableValue(stream)) {
-          if (chunk) {
-            accumulatedContent = chunk;
-            setStreamingContent(accumulatedContent);
+        console.log("[CLIENT] Got result:", result);
+
+        if (result) {
+          // Add assistant message
+          console.log("[CLIENT] Adding message with content:", result.content);
+          addAssistantMessage(result.content);
+          setStreamingContent("");
+
+          // Update traits
+          if (Object.keys(result.traits).length > 0) {
+            updateTraits(result.traits, result.signals);
           }
+
+          // Speak the response
+          speak(result.content);
         }
-
-        // Get the final result with traits
-        const result = await getResult();
-
-        // Add assistant message
-        addAssistantMessage(result.content);
-        setStreamingContent("");
-
-        // Update traits
-        if (Object.keys(result.traits).length > 0) {
-          updateTraits(result.traits, result.signals);
-        }
-
-        // Speak the response
-        speak(result.content);
       } catch (error) {
         console.error("[SEND_MESSAGE_ERROR]", error);
+        setStreamingContent("");
       } finally {
         setIsProcessing(false);
       }

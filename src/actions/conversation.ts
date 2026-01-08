@@ -1,10 +1,9 @@
 "use server";
 
-import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { createStreamableValue } from "ai/rsc";
+import { generateText } from "ai";
 import { Message, Persona, OCEANTraits } from "@/types";
 import { generateSystemPrompt } from "@/lib/ai/system-prompts";
+import { getAIProvider } from "@/lib/ai/provider";
 
 export interface ConversationResult {
   content: string;
@@ -46,64 +45,6 @@ function parseAIResponse(fullResponse: string): ConversationResult {
 export async function continueConversation(
   messages: Message[],
   persona: Persona
-) {
-  const stream = createStreamableValue("");
-  let fullResponse = "";
-
-  const systemPrompt = generateSystemPrompt(persona);
-
-  const formattedMessages = messages.map((msg) => ({
-    role: msg.role as "user" | "assistant",
-    content: msg.content,
-  }));
-
-  (async () => {
-    try {
-      const { textStream } = streamText({
-        model: openai("gpt-4o"),
-        system: systemPrompt,
-        messages: formattedMessages,
-        temperature: 0.8,
-        maxTokens: 500,
-      });
-
-      for await (const text of textStream) {
-        fullResponse += text;
-
-        // Only stream the content part (before ---TRAITS---)
-        const traitMarker = "---TRAITS---";
-        if (!fullResponse.includes(traitMarker)) {
-          stream.update(fullResponse);
-        } else {
-          // Stop updating once we hit the trait marker
-          const contentPart = fullResponse.substring(
-            0,
-            fullResponse.indexOf(traitMarker)
-          );
-          stream.update(contentPart.trim());
-        }
-      }
-
-      stream.done();
-    } catch (error) {
-      console.error("[CONVERSATION_ERROR]", error);
-      stream.error(error instanceof Error ? error : new Error("Unknown error"));
-    }
-  })();
-
-  return {
-    stream: stream.value,
-    getResult: async (): Promise<ConversationResult> => {
-      // Wait a bit for the stream to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      return parseAIResponse(fullResponse);
-    },
-  };
-}
-
-export async function generateResponse(
-  messages: Message[],
-  persona: Persona
 ): Promise<ConversationResult> {
   const systemPrompt = generateSystemPrompt(persona);
 
@@ -113,18 +54,27 @@ export async function generateResponse(
   }));
 
   try {
-    const { text } = await streamText({
-      model: openai("gpt-4o"),
+    const { model, name } = getAIProvider();
+    console.log(`[SERVER] Calling ${name}...`);
+    console.log("[SERVER] Messages count:", formattedMessages.length);
+
+    const { text: fullText } = await generateText({
+      model,
       system: systemPrompt,
       messages: formattedMessages,
       temperature: 0.8,
       maxTokens: 500,
     });
 
-    const fullText = await text;
-    return parseAIResponse(fullText);
+    console.log("[SERVER] Got full text (length):", fullText?.length);
+    console.log("[SERVER] Full response:", fullText);
+
+    const parsedResult = parseAIResponse(fullText || "");
+    console.log("[SERVER] Parsed result:", JSON.stringify(parsedResult));
+
+    return parsedResult;
   } catch (error) {
-    console.error("[GENERATE_RESPONSE_ERROR]", error);
+    console.error("[CONVERSATION_ERROR]", error);
     throw error;
   }
 }

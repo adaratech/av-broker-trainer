@@ -29,14 +29,14 @@ flowchart TD
     end
 
     subgraph External["External Services"]
-        OpenAI[OpenAI GPT-4o]
+        LLM[Configurable LLM<br/>Groq/Google/OpenAI/Anthropic]
     end
 
     STT -->|transcript| State
     State -->|user message| Action
     Action -->|persona prompt| Prompt
-    Prompt -->|messages| OpenAI
-    OpenAI -->|streamed response| Action
+    Prompt -->|messages| LLM
+    LLM -->|response| Action
     Action -->|response + traits| Parser
     Parser -->|parsed data| State
     State -->|display text| TTS
@@ -47,14 +47,15 @@ flowchart TD
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| Framework | Next.js 15.1.3 (App Router) | SSR, Server Actions, Routing |
-| Language | TypeScript (strict) | Type safety |
+| Framework | Next.js 16.1.1 (App Router) | SSR, Server Actions, Routing |
+| Language | TypeScript 5.7 (strict) | Type safety |
 | Styling | Tailwind CSS 3.4 | Utility-first CSS |
 | UI Components | shadcn/ui (custom) | Accessible, customizable components |
-| AI Integration | Vercel AI SDK 4.x | Streaming LLM responses |
-| LLM | OpenAI GPT-4o | Virtual customer conversations |
+| AI Integration | Vercel AI SDK 6.x | LLM responses via generateText |
+| LLM | Configurable (Groq/Google/OpenAI/Anthropic) | Virtual customer conversations |
 | Voice STT | Web Speech API | Browser-native speech recognition |
 | Voice TTS | Web Speech API | Browser-native speech synthesis |
+| Linting | ESLint 9 (flat config) | Code quality enforcement |
 
 ## File Structure
 
@@ -65,7 +66,11 @@ av-broker-trainer/
 ├── tsconfig.json               # TypeScript configuration
 ├── tailwind.config.ts          # Tailwind CSS configuration
 ├── next.config.ts              # Next.js configuration
-├── .env.local                  # Environment variables (OPENAI_API_KEY)
+├── eslint.config.mjs           # ESLint flat configuration
+├── .env.local                  # Environment variables (AI_PROVIDER, API keys)
+├── scripts/
+│   ├── test-conversation.ts    # Conversation flow test suite
+│   └── test-edge-cases.ts      # Edge case test suite
 ├── src/
 │   ├── app/
 │   │   ├── globals.css         # Global styles + CSS variables
@@ -90,6 +95,7 @@ av-broker-trainer/
 │   ├── lib/
 │   │   ├── utils.ts            # cn() helper for classnames
 │   │   └── ai/
+│   │       ├── provider.ts     # Multi-provider abstraction (Groq/Google/OpenAI/Anthropic)
 │   │       ├── personas.ts     # 5 persona definitions
 │   │       └── system-prompts.ts # AI prompt generation
 │   ├── hooks/
@@ -120,8 +126,8 @@ Five distinct Italian personas with predefined Big Five trait profiles:
 
 1. **User speaks** → SpeechRecognition captures audio and converts to text
 2. **Transcript captured** → Text added to conversation history via `useSession`
-3. **Server action called** → `continueConversation` sends history + persona context to GPT-4o
-4. **AI responds** → GPT-4o generates response as the persona character
+3. **Server action called** → `continueConversation` sends history + persona context to configured LLM
+4. **AI responds** → LLM generates response as the persona character
 5. **Response parsed** → Extract spoken text and OCEAN trait signals from response
 6. **UI updated** → Conversation panel shows new message, trait panel updates
 7. **TTS speaks** → SpeechSynthesis reads the response aloud
@@ -166,7 +172,35 @@ The AI is instructed to append structured JSON after its natural response:
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `OPENAI_API_KEY` | OpenAI API key for GPT-4o | Yes |
+| `AI_PROVIDER` | LLM provider: `openai`, `groq`, `google`, or `anthropic` | No (default: `openai`) |
+| `GROQ_API_KEY` | Groq API key for Llama 3.3 | Yes (if using Groq) |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI API key for Gemini | Yes (if using Google) |
+| `OPENAI_API_KEY` | OpenAI API key for GPT-4o | Yes (if using OpenAI) |
+| `ANTHROPIC_API_KEY` | Anthropic API key for Claude | Yes (if using Anthropic) |
+
+### Switching Providers
+
+To switch between LLM providers, update `.env.local`:
+
+```bash
+# Use OpenAI GPT-4o (default - requires billing)
+AI_PROVIDER=openai
+OPENAI_API_KEY=your-key-here
+
+# Use Groq Llama 3.3 (free tier - for testing)
+AI_PROVIDER=groq
+GROQ_API_KEY=your-key-here
+
+# Use Google Gemini (free tier)
+AI_PROVIDER=google
+GOOGLE_GENERATIVE_AI_API_KEY=your-key-here
+
+# Use Anthropic Claude (requires billing)
+AI_PROVIDER=anthropic
+ANTHROPIC_API_KEY=your-key-here
+```
+
+No code changes required - just update the env vars and restart the server.
 
 ## Browser Compatibility
 
@@ -185,7 +219,9 @@ npm install
 
 # Set up environment
 cp .env.local.example .env.local
-# Add your OPENAI_API_KEY
+
+# Add your OpenAI API key to .env.local as OPENAI_API_KEY
+# Get one at https://platform.openai.com/api-keys
 
 # Run development server
 npm run dev
@@ -194,6 +230,34 @@ npm run dev
 npm run build
 npm start
 ```
+
+## Testing
+
+Run conversation tests to verify the AI integration:
+
+```bash
+# Test normal conversation flows (7 tests)
+npx tsx scripts/test-conversation.ts
+
+# Test edge cases (8 tests)
+npx tsx scripts/test-edge-cases.ts
+```
+
+### Test Coverage
+
+| Category | Tests | Status |
+|----------|-------|--------|
+| Normal greeting | ✅ | Responds naturally in Italian |
+| Empty message | ✅ | Handles gracefully |
+| Short message | ✅ | Responds appropriately |
+| Long detailed message | ✅ | Engages with content |
+| Special characters (€, %) | ✅ | Parses correctly |
+| Multi-turn conversation | ✅ | Maintains context |
+| Unicode/emojis | ✅ | Handles correctly |
+| Mixed languages | ✅ | Responds in Italian |
+| Technical jargon | ✅ | Persona stays in character |
+| Aggressive tone | ✅ | Handles professionally |
+| Rejection handling | ✅ | Responds politely |
 
 ## ADR Log
 
@@ -205,3 +269,16 @@ npm start
 | 2025-01-07 | Stateless MVP | Faster development, simpler architecture | No session history, analytics, or progress tracking |
 | 2025-01-07 | Italian personas | Target market is Italian insurance brokers | Prompts and UI in Italian |
 | 2025-01-07 | Trait extraction via JSON markers | Reliable parsing, avoids regex on natural language | Slightly more complex prompting |
+| 2026-01-07 | Add ESLint flat config | Code quality and consistency | Requires ESLint 9+, catches unused variables |
+| 2026-01-07 | Upgrade to Next.js 16.1.1 | Latest stable version with Turbopack | Improved build performance, React 19 support |
+| 2026-01-07 | Fix Server Action serialization | Functions can't be passed to Client Components | Use streamable value for result instead of callback function |
+| 2026-01-07 | Fix result stream emission | Streamable value must be updated before done() | Call update() before done() to emit the parsed result |
+| 2026-01-07 | Fix AI SDK 4.x streaming | textStream/fullStream not working | Use generateText for non-streaming, need to fix streaming later |
+| 2026-01-07 | Identify API quota issue | OpenAI API returning quota exceeded error | User needs to add billing credits to OpenAI account |
+| 2026-01-07 | Switch from OpenAI to Claude | OpenAI quota exceeded, Claude available | Better cost control, same quality roleplay |
+| 2026-01-07 | Make speech synthesis non-blocking | WSL/browser may not support TTS | Warning instead of error, app continues working |
+| 2026-01-07 | Upgrade to AI SDK 6.x | ai/rsc module removed in v6, RSC streaming helpers unavailable | Simplified to Promise-based server action, removed streaming complexity |
+| 2026-01-07 | Multi-provider abstraction | Need free testing option, want easy provider switching | Created provider.ts, switch via AI_PROVIDER env var, no code changes needed |
+| 2026-01-08 | Add Groq as default provider | Google Gemini quota issues on new API keys | Groq has reliable free tier, fast inference with Llama 3.3 70B |
+| 2026-01-08 | Add conversation test suite | Need automated testing for AI integration | 15 tests covering normal flows and edge cases, all passing |
+| 2026-01-08 | Set OpenAI as default provider | Production-ready configuration | Users add their own OPENAI_API_KEY, Groq available for free testing |

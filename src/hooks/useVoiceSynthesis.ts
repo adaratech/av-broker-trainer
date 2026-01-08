@@ -82,9 +82,13 @@ export function useVoiceSynthesis(): UseVoiceSynthesisReturn {
       };
 
       utterance.onerror = (event) => {
-        console.error("[SPEECH_SYNTHESIS_ERROR]", event);
-        setError(`Errore sintesi vocale: ${event.error}`);
+        // Log but don't block - speech synthesis may not work in all environments (e.g., WSL)
+        console.warn("[SPEECH_SYNTHESIS_WARNING]", event.error || "Unknown speech error");
         setIsSpeaking(false);
+        // Only set error for critical failures, not for common issues like "not-allowed"
+        if (event.error && event.error !== "not-allowed" && event.error !== "audio-busy") {
+          setError(`Errore sintesi vocale: ${event.error}`);
+        }
       };
 
       utteranceRef.current = utterance;

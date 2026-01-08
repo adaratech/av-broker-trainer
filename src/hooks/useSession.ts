@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Session, Message, Persona, OCEANTraits, TraitSignal } from "@/types";
+import { Session, Message, OCEANTraits, TraitSignal } from "@/types";
 import { getRandomPersona } from "@/lib/ai/personas";
 import { generateInitialGreeting } from "@/lib/ai/system-prompts";
 

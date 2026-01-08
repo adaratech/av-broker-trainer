@@ -1,6 +1,6 @@
 "use client";
 
-import { Mic, MicOff, Volume2, VolumeX, Loader2 } from "lucide-react";
+import { Mic, MicOff, VolumeX, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
