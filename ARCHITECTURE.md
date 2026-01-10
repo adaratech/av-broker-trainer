@@ -143,24 +143,97 @@ The AI is instructed to append structured JSON after its natural response:
 {"traits":{"O":0.7,"C":0.8},"signals":["Comunicazione diretta","Ha chiesto dati specifici"]}
 ```
 
+## UI/UX Design System
+
+The application uses a clean, editorial design language that prioritizes readability and professionalism.
+
+### Design Philosophy
+
+- **Typography-first**: Instrument Serif for headings, Inter for body text
+- **Minimal decoration**: Clean borders instead of heavy shadows/glows
+- **Unified color**: Single green palette (HSL 152) without competing accent colors
+- **Editorial layout**: Asymmetric, content-focused sections
+- **Subtle interactions**: Border color changes on hover instead of transforms
+
+### Design Tokens (globals.css)
+
+| Token | Purpose |
+|-------|---------|
+| `--primary` | Primary brand color (green, HSL 152 60% 32%) |
+| `--accent` | Light green for backgrounds (HSL 152 45% 92%) |
+| `--background` | Off-white with subtle green tint |
+| `--card` | Pure white card surfaces |
+| `--muted` | Subdued backgrounds for messages |
+
+### Typography
+
+| Font | Usage |
+|------|-------|
+| Instrument Serif | Headings (h1, h2, h3) for editorial feel |
+| Inter | Body text, UI elements, labels |
+
+### Visual Effects
+
+| Class | Effect |
+|-------|--------|
+| `.shadow-subtle` | Minimal box-shadow for cards |
+| `.shadow-card` | Slightly elevated cards |
+| `.underline-accent` | Green underline text decoration |
+| `.border-accent-left` | 3px green left border |
+| `.card-hover` | Border color change on hover |
+
+### Animations
+
+| Animation | Usage |
+|-----------|-------|
+| `pulse-ring` | Two-layer pulse for listening mic |
+| `shimmer` | Loading skeleton shimmer |
+
+### Component Styling Patterns
+
+- **Cards**: `border bg-card rounded-lg` with clean borders
+- **Buttons**: Solid primary color, no gradients
+- **Headers**: Sticky with solid `bg-card border-b`
+- **Icons**: Wrapped in `bg-accent rounded-lg` containers
+- **Messages**: Solid primary for user, muted for assistant
+- **Numbered steps**: Circular outlined numbers with serif font
+
 ## Key Components
 
 ### VoiceControl (`src/components/session/VoiceControl.tsx`)
-- Push-to-talk microphone button with visual pulse animation
-- Shows listening/processing/speaking states
-- Handles browser compatibility warnings
+- Push-to-talk button (20×20) with solid primary color
+- Two-layer pulse ring animation when listening
+- Status indicators with small animated dots
+- Keyboard hint showing "K" key for push-to-talk
+- Clean border container wrapping the control
+
+### Keyboard Controls
+
+| Key | Action |
+|-----|--------|
+| `K` (hold) | Push-to-talk: hold to capture voice, release to send |
+
+The keyboard listener is active only during an active session and ignores keypresses in input fields.
 
 ### ConversationPanel (`src/components/session/ConversationPanel.tsx`)
-- Scrollable chat transcript with auto-scroll
-- Shows user (broker) and assistant (customer) messages
-- Displays interim transcript while user is speaking
-- Shows streaming AI response with typing indicator
+- Scrollable chat with rounded-lg message bubbles
+- Solid primary background for user, muted for assistant
+- Small green indicator dot in header
+- Streaming response with cursor animation
 
 ### PsychographicPanel (`src/components/session/PsychographicPanel.tsx`)
-- Five progress bars for OCEAN traits (0-100%)
+- Five OCEAN trait progress bars with icons
 - Unknown traits show animated placeholder
-- Displays recent behavioral signals
-- Color-coded by trait type
+- Recent signals in styled cards with trait-colored dots
+
+### PersonaCard (`src/components/session/PersonaCard.tsx`)
+- Solid primary top border accent (3px)
+- Avatar with primary background
+- Background details in muted container
+
+### SessionControls (`src/components/session/SessionControls.tsx`)
+- Solid primary button colors
+- Clean, minimal styling
 
 ### useSession Hook (`src/hooks/useSession.ts`)
 - Manages session state (idle, active, ended)
@@ -282,3 +355,7 @@ npx tsx scripts/test-edge-cases.ts
 | 2026-01-08 | Add Groq as default provider | Google Gemini quota issues on new API keys | Groq has reliable free tier, fast inference with Llama 3.3 70B |
 | 2026-01-08 | Add conversation test suite | Need automated testing for AI integration | 15 tests covering normal flows and edge cases, all passing |
 | 2026-01-08 | Set OpenAI as default provider | Production-ready configuration | Users add their own OPENAI_API_KEY, Groq available for free testing |
+| 2026-01-10 | Modern UI styling overhaul | Improve visual polish and UX | Glass morphism, gradients, shadows, animations; professional look |
+| 2026-01-10 | Change primary color to green | User preference for green theme | Updated all color tokens and gradient references from blue to emerald/green |
+| 2026-01-10 | Add push-to-talk K key | Hands-free voice input control | Hold K to record, release to send; works alongside mic button |
+| 2026-01-10 | Editorial UI redesign | Make UI more unique, less "AI-generated" looking | Added Instrument Serif for headings, removed gradients/glows/floating orbs, unified to single green palette, cleaner borders |

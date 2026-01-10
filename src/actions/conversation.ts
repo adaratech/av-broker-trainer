@@ -59,11 +59,12 @@ export async function continueConversation(
     console.log("[SERVER] Messages count:", formattedMessages.length);
 
     const { text: fullText } = await generateText({
-      model,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      model: model as any,
       system: systemPrompt,
       messages: formattedMessages,
       temperature: 0.8,
-      maxTokens: 500,
+      maxOutputTokens: 500,
     });
 
     console.log("[SERVER] Got full text (length):", fullText?.length);

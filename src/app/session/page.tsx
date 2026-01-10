@@ -138,11 +138,50 @@ export default function SessionPage() {
     startSession();
   }, [stopSpeaking, resetTranscript, startSession]);
 
+  // Push-to-talk with K key
+  useEffect(() => {
+    if (session.status !== "active") return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input field
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      // K key to start listening
+      if (e.key.toLowerCase() === "k" && !e.repeat && !isListening && !isProcessing && !isSpeaking) {
+        e.preventDefault();
+        startListening();
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // Ignore if typing in an input field
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      // K key released - stop listening and send
+      if (e.key.toLowerCase() === "k" && isListening) {
+        e.preventDefault();
+        handleStopListening();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [session.status, isListening, isProcessing, isSpeaking, startListening, handleStopListening]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <header className="border-b bg-card sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-2">
@@ -150,8 +189,8 @@ export default function SessionPage() {
                 Home
               </Button>
             </Link>
-            <div className="h-6 w-px bg-border" />
-            <h1 className="font-semibold">Sessione di Training</h1>
+            <div className="h-5 w-px bg-border" />
+            <h1 className="font-serif text-lg">Sessione di Training</h1>
           </div>
           <SessionControls
             status={session.status}
@@ -163,29 +202,38 @@ export default function SessionPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-6 py-8">
         {session.status === "idle" ? (
           // Idle State
-          <div className="max-w-2xl mx-auto text-center py-16">
-            <h2 className="text-2xl font-bold mb-4">
-              Pronto per iniziare il training?
+          <div className="max-w-xl mx-auto text-center py-16">
+            <div className="h-16 w-16 rounded-full border-2 border-primary flex items-center justify-center mx-auto mb-8">
+              <ArrowLeft className="h-8 w-8 text-primary rotate-180" />
+            </div>
+            <h2 className="font-serif text-3xl mb-4">
+              Pronto per iniziare?
             </h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground mb-10">
               Premi il pulsante qui sopra per iniziare una nuova sessione.
-              <br />
               Un cliente virtuale con personalità casuale ti accoglierà.
             </p>
-            <div className="p-8 border rounded-lg bg-muted/30">
-              <h3 className="font-semibold mb-4">Suggerimenti:</h3>
-              <ul className="text-sm text-muted-foreground space-y-2 text-left max-w-md mx-auto">
-                <li>
-                  • Assicurati che il microfono sia attivo e funzionante
+            <div className="p-6 rounded-lg border bg-card text-left">
+              <h3 className="font-semibold mb-4">Suggerimenti</h3>
+              <ul className="text-muted-foreground space-y-3">
+                <li className="flex items-start gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  Tieni premuto <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono border">K</kbd> per parlare
                 </li>
-                <li>• Usa Chrome o Edge per la migliore esperienza</li>
-                <li>• Parla chiaramente e attendi la risposta del cliente</li>
-                <li>
-                  • Osserva il pannello psicografico per adattare il tuo
-                  approccio
+                <li className="flex items-start gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  Usa Chrome o Edge per la migliore esperienza
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  Parla chiaramente e attendi la risposta del cliente
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  Osserva il pannello psicografico per adattare il tuo approccio
                 </li>
               </ul>
             </div>
@@ -227,11 +275,15 @@ export default function SessionPage() {
 
               {/* Session Ended Message */}
               {session.status === "ended" && (
-                <div className="text-center p-8 border rounded-lg bg-muted/30">
-                  <h3 className="font-semibold mb-2">Sessione terminata</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Hai completato la conversazione con {session.persona?.name}.
-                    <br />
+                <div className="text-center p-8 rounded-lg border bg-card">
+                  <div className="h-12 w-12 rounded-full border-2 border-primary flex items-center justify-center mx-auto mb-6">
+                    <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-xl mb-3">Sessione terminata</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Hai completato la conversazione con <span className="font-medium text-foreground">{session.persona?.name}</span>.
                     Rivedi il profilo psicografico emerso durante l&apos;interazione.
                   </p>
                   <Button onClick={handleRestart} className="gap-2">

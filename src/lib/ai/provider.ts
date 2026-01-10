@@ -2,13 +2,14 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { openai } from "@ai-sdk/openai";
 import { groq } from "@ai-sdk/groq";
-import { LanguageModelV1 } from "ai";
 
 export type AIProvider = "openai" | "anthropic" | "google" | "groq";
 
+type AIModel = ReturnType<typeof openai | typeof anthropic | typeof google | typeof groq>;
+
 interface ProviderConfig {
   provider: AIProvider;
-  model: LanguageModelV1;
+  model: AIModel;
   name: string;
 }
 

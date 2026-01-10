@@ -17,7 +17,7 @@ export function SessionControls({
   onRestart,
 }: SessionControlsProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       {status === "idle" && (
         <Button onClick={onStart} className="gap-2">
           <Play className="h-4 w-4" />

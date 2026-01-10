@@ -14,11 +14,11 @@ interface PersonaCardProps {
 export function PersonaCard({ persona, showDetails = false }: PersonaCardProps) {
   if (!persona) {
     return (
-      <Card>
-        <CardContent className="flex items-center gap-4 p-4">
+      <Card className="border">
+        <CardContent className="flex items-center gap-4 p-5">
           <Avatar className="h-12 w-12">
-            <AvatarFallback>
-              <User className="h-6 w-6" />
+            <AvatarFallback className="bg-muted">
+              <User className="h-5 w-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
           <div>
@@ -35,10 +35,11 @@ export function PersonaCard({ persona, showDetails = false }: PersonaCardProps) 
   }
 
   return (
-    <Card>
-      <CardContent className="p-4">
+    <Card className="border overflow-hidden">
+      <div className="h-1 bg-primary" />
+      <CardContent className="p-5">
         <div className="flex items-start gap-4">
-          <Avatar className="h-12 w-12 bg-primary">
+          <Avatar className="h-12 w-12">
             <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
               {persona.avatar}
             </AvatarFallback>
@@ -50,11 +51,11 @@ export function PersonaCard({ persona, showDetails = false }: PersonaCardProps) 
                 Cliente virtuale
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {persona.description}
             </p>
             {showDetails && (
-              <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+              <p className="text-xs text-muted-foreground mt-3 bg-muted rounded p-2">
                 {persona.background}
               </p>
             )}

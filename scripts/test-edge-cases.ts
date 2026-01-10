@@ -70,7 +70,7 @@ async function runEdgeTest(test: EdgeTest): Promise<boolean> {
         { role: "user", content: test.userMessage },
       ],
       temperature: 0.8,
-      maxTokens: 500,
+      maxOutputTokens: 500,
     });
     const duration = Date.now() - startTime;
 

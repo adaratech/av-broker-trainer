@@ -43,7 +43,7 @@ const traitConfig: Record<
     lowLabel: "Spontaneo",
     highLabel: "Metodico",
     icon: ClipboardCheck,
-    color: "bg-blue-500",
+    color: "bg-emerald-500",
   },
   E: {
     label: "Estroversione",
@@ -128,36 +128,44 @@ export function PsychographicPanel({
   const recentSignals = signals.slice(-5);
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg">Profilo Psicografico</CardTitle>
-        <p className="text-xs text-muted-foreground">
+    <Card className="h-full flex flex-col shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+      <CardHeader className="pb-3 border-b">
+        <CardTitle className="text-lg flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-500/5 flex items-center justify-center">
+            <Lightbulb className="h-4 w-4 text-purple-500" />
+          </div>
+          Profilo Psicografico
+        </CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">
           Big Five (OCEAN) - I tratti emergono durante la conversazione
         </p>
       </CardHeader>
-      <CardContent className="flex-1 space-y-6">
-        <div className="space-y-4">
+      <CardContent className="flex-1 space-y-6 pt-6">
+        <div className="space-y-5">
           {(Object.keys(traitConfig) as (keyof OCEANTraits)[]).map((trait) => (
             <TraitBar key={trait} trait={trait} value={traits[trait]} />
           ))}
         </div>
 
         {recentSignals.length > 0 && (
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Segnali recenti</h4>
-            <div className="space-y-1">
+          <div className="space-y-3 pt-4 border-t">
+            <h4 className="text-sm font-semibold flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Segnali recenti
+            </h4>
+            <div className="space-y-2">
               {recentSignals.map((signal, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                  className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2"
                 >
                   <div
                     className={cn(
-                      "h-2 w-2 rounded-full",
+                      "h-2 w-2 rounded-full mt-1 flex-shrink-0",
                       traitConfig[signal.trait].color
                     )}
                   />
-                  <span>{signal.signal}</span>
+                  <span className="leading-relaxed">{signal.signal}</span>
                 </div>
               ))}
             </div>

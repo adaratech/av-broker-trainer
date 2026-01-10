@@ -38,14 +38,14 @@ export function VoiceControl({
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
+    <div className="flex flex-col items-center gap-5 p-6 rounded-lg border bg-card">
       <div className="relative">
         {/* Pulse animation when listening */}
         {isListening && (
           <>
-            <div className="absolute inset-0 rounded-full bg-red-500/20 animate-pulse-ring" />
+            <div className="absolute inset-0 rounded-full bg-destructive/20 animate-pulse-ring" />
             <div
-              className="absolute inset-0 rounded-full bg-red-500/20 animate-pulse-ring"
+              className="absolute inset-0 rounded-full bg-destructive/15 animate-pulse-ring"
               style={{ animationDelay: "0.5s" }}
             />
           </>
@@ -56,8 +56,8 @@ export function VoiceControl({
           variant={isListening ? "destructive" : "default"}
           className={cn(
             "relative h-20 w-20 rounded-full transition-all duration-200",
-            isListening && "scale-110",
-            isProcessing && "opacity-50 cursor-not-allowed"
+            isListening && "scale-105",
+            isProcessing && "opacity-70 cursor-not-allowed"
           )}
           onClick={isListening ? onStopListening : onStartListening}
           disabled={isProcessing || isSpeaking}
@@ -72,15 +72,26 @@ export function VoiceControl({
         </Button>
       </div>
 
-      <div className="text-sm text-muted-foreground text-center min-h-[20px]">
+      <div className="text-sm text-center min-h-[20px]">
         {isProcessing ? (
-          "Elaborazione in corso..."
+          <span className="text-muted-foreground flex items-center gap-2">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Elaborazione...
+          </span>
         ) : isListening ? (
-          <span className="text-red-500 font-medium">In ascolto...</span>
+          <span className="text-destructive flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" />
+            In ascolto...
+          </span>
         ) : isSpeaking ? (
-          <span className="text-blue-500">Il cliente sta parlando...</span>
+          <span className="text-primary flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            Il cliente sta parlando...
+          </span>
         ) : (
-          "Premi per parlare"
+          <span className="text-muted-foreground">
+            Premi per parlare o tieni premuto <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono border">K</kbd>
+          </span>
         )}
       </div>
 
@@ -97,7 +108,7 @@ export function VoiceControl({
       )}
 
       {error && (
-        <div className="text-destructive text-sm text-center max-w-xs">
+        <div className="text-destructive text-sm text-center max-w-xs bg-destructive/10 px-3 py-2 rounded">
           {error}
         </div>
       )}

@@ -136,7 +136,7 @@ async function runTest(testCase: TestCase): Promise<{ success: boolean; error?: 
       system: TEST_SYSTEM_PROMPT,
       messages: formattedMessages,
       temperature: 0.8,
-      maxTokens: 500,
+      maxOutputTokens: 500,
     });
     const duration = Date.now() - startTime;
 
