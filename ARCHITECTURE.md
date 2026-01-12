@@ -145,67 +145,82 @@ The AI is instructed to append structured JSON after its natural response:
 
 ## UI/UX Design System
 
-The application uses a clean, editorial design language that prioritizes readability and professionalism.
+The application uses a distinctive, handcrafted design language that feels unique and purposeful.
 
 ### Design Philosophy
 
-- **Typography-first**: Instrument Serif for headings, Inter for body text
-- **Minimal decoration**: Clean borders instead of heavy shadows/glows
-- **Unified color**: Single green palette (HSL 152) without competing accent colors
-- **Editorial layout**: Asymmetric, content-focused sections
-- **Subtle interactions**: Border color changes on hover instead of transforms
+- **Typography-forward**: Instrument Serif for headings creates an editorial feel
+- **Organic shapes**: Blob shapes and asymmetric elements add visual interest
+- **Layered depth**: Multiple shadow layers and gradients create dimension
+- **Crafted details**: Corner accents, stamps, and custom decorations
+- **Unified green palette**: Deep forest green (HSL 158) with warm accents
 
 ### Design Tokens (globals.css)
 
 | Token | Purpose |
 |-------|---------|
-| `--primary` | Primary brand color (green, HSL 152 60% 32%) |
-| `--accent` | Light green for backgrounds (HSL 152 45% 92%) |
-| `--background` | Off-white with subtle green tint |
+| `--primary` | Primary brand color (forest green, HSL 158 64% 28%) |
+| `--accent` | Light green for backgrounds (HSL 158 35% 90%) |
+| `--background` | Off-white with subtle green tint (HSL 140 15% 97%) |
 | `--card` | Pure white card surfaces |
-| `--muted` | Subdued backgrounds for messages |
+| `--muted` | Subdued backgrounds (HSL 140 10% 93%) |
+| `--green-50` to `--green-700` | Extended green scale |
+| `--warm-50` to `--warm-200` | Warm accent colors |
 
 ### Typography
 
 | Font | Usage |
 |------|-------|
-| Instrument Serif | Headings (h1, h2, h3) for editorial feel |
+| Instrument Serif | Headings, numbers, persona initials |
 | Inter | Body text, UI elements, labels |
 
-### Visual Effects
+### Custom Utility Classes
 
 | Class | Effect |
 |-------|--------|
-| `.shadow-subtle` | Minimal box-shadow for cards |
-| `.shadow-card` | Slightly elevated cards |
-| `.underline-accent` | Green underline text decoration |
-| `.border-accent-left` | 3px green left border |
-| `.card-hover` | Border color change on hover |
+| `.paper-card` | Subtle gradient background with layered shadow |
+| `.corner-accent` | L-shaped green accent in top-left corner |
+| `.stamp` | Rotated badge with dashed inner border |
+| `.blob` | Organic rounded shape (60%/40%/30%/70%) |
+| `.number-marker` | Diamond-shaped step number |
+| `.card-lifted` | Hover lift effect with shadow |
+| `.shadow-stepped` | Offset shadow layers |
+| `.ink-bleed` | Subtle text shadow for headings |
+| `.trait-progress` | Custom progress bar with tick marks |
+| `.message-user` | User message bubble with asymmetric corners |
+| `.message-assistant` | Assistant message with left border accent |
+| `.btn-lift` | Button hover lift with shadow |
 
 ### Animations
 
 | Animation | Usage |
 |-----------|-------|
-| `pulse-ring` | Two-layer pulse for listening mic |
-| `shimmer` | Loading skeleton shimmer |
+| `pulse-organic` | Morphing blob shape animation |
+| `ripple-out` | Expanding ripple for mic button |
+| `float-gentle` | Subtle floating motion |
+| `shimmer-sweep` | Loading skeleton shimmer |
+| `blink-cursor` | Typing cursor animation |
+| `mic-pulse` | Red glow pulse when recording |
 
 ### Component Styling Patterns
 
-- **Cards**: `border bg-card rounded-lg` with clean borders
-- **Buttons**: Solid primary color, no gradients
-- **Headers**: Sticky with solid `bg-card border-b`
-- **Icons**: Wrapped in `bg-accent rounded-lg` containers
-- **Messages**: Solid primary for user, muted for assistant
-- **Numbered steps**: Circular outlined numbers with serif font
+- **Cards**: `paper-card` with layered shadows, `corner-accent` for emphasis
+- **Buttons**: Primary with lift animation, active scale feedback
+- **Headers**: Sticky with backdrop blur, gradient icon containers
+- **Messages**: Asymmetric rounded corners, initials avatars
+- **Progress bars**: Custom trait bars with tick marks
+- **Status indicators**: Pulsing dots with appropriate colors
+- **Decorative elements**: Blobs, gradients, corner decorations
 
 ## Key Components
 
 ### VoiceControl (`src/components/session/VoiceControl.tsx`)
-- Push-to-talk button (20×20) with solid primary color
-- Two-layer pulse ring animation when listening
-- Status indicators with small animated dots
-- Keyboard hint showing "K" key for push-to-talk
-- Clean border container wrapping the control
+- Horizontal layout with mic button, status area, and stop button
+- Dynamic color bar at top (red when recording, green when speaking, muted when idle)
+- Triple ripple animation when recording
+- Mic button with glow effect and scale animation
+- Status text with icon showing current state
+- Keyboard hint for push-to-talk (K key)
 
 ### Keyboard Controls
 
@@ -216,23 +231,29 @@ The application uses a clean, editorial design language that prioritizes readabi
 The keyboard listener is active only during an active session and ignores keypresses in input fields.
 
 ### ConversationPanel (`src/components/session/ConversationPanel.tsx`)
-- Scrollable chat with rounded-lg message bubbles
-- Solid primary background for user, muted for assistant
-- Small green indicator dot in header
-- Streaming response with cursor animation
+- Gradient header with message counter
+- Asymmetric message bubbles (`.message-user`, `.message-assistant`)
+- Serif initials avatar for assistant, icon avatar for user
+- Message numbering on hover
+- Dashed border style for interim (listening) state
+- Blinking cursor animation for streaming responses
 
 ### PsychographicPanel (`src/components/session/PsychographicPanel.tsx`)
-- Five OCEAN trait progress bars with icons
-- Unknown traits show animated placeholder
-- Recent signals in styled cards with trait-colored dots
+- Gradient icon containers with trait-specific colors (violet, emerald, amber, rose, red)
+- 5-dot progress indicator in header showing revealed traits count
+- Custom `.trait-progress` bars with tick marks
+- Shimmer animation for unrevealed traits
+- Letter badges (O, C, E, A, N) for signal indicators
 
 ### PersonaCard (`src/components/session/PersonaCard.tsx`)
-- Solid primary top border accent (3px)
-- Avatar with primary background
-- Background details in muted container
+- Gradient top accent bar
+- Serif initials in gradient avatar container
+- Pulsing green "online" indicator dot
+- Corner decoration with radial gradient
+- Expandable background info section with icon
 
 ### SessionControls (`src/components/session/SessionControls.tsx`)
-- Solid primary button colors
+- Primary buttons with lift animation
 - Clean, minimal styling
 
 ### useSession Hook (`src/hooks/useSession.ts`)
@@ -359,3 +380,4 @@ npx tsx scripts/test-edge-cases.ts
 | 2026-01-10 | Change primary color to green | User preference for green theme | Updated all color tokens and gradient references from blue to emerald/green |
 | 2026-01-10 | Add push-to-talk K key | Hands-free voice input control | Hold K to record, release to send; works alongside mic button |
 | 2026-01-10 | Editorial UI redesign | Make UI more unique, less "AI-generated" looking | Added Instrument Serif for headings, removed gradients/glows/floating orbs, unified to single green palette, cleaner borders |
+| 2026-01-12 | Distinctive UI overhaul | Make design more unique and handcrafted | Added organic blob shapes, paper textures, corner accents, stamps, stepped shadows, asymmetric message bubbles, custom progress bars, lift animations |

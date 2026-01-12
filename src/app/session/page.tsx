@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Leaf, Play, RotateCcw, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 import { useSession } from "@/hooks/useSession";
@@ -180,17 +180,27 @@ export default function SessionPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-50">
+      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
-                Home
+                <span className="hidden sm:inline">Home</span>
               </Button>
             </Link>
             <div className="h-5 w-px bg-border" />
-            <h1 className="font-serif text-lg">Sessione di Training</h1>
+            <div className="flex items-center gap-2">
+              <div className="h-7 w-7 rounded-md bg-primary/10 flex items-center justify-center">
+                <Leaf className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <div>
+                <span className="font-serif text-sm sm:text-base">Sessione di Training</span>
+                <span className="hidden sm:block text-[10px] text-muted-foreground -mt-0.5">
+                  {session.status === "active" && session.persona?.name}
+                </span>
+              </div>
+            </div>
           </div>
           <SessionControls
             status={session.status}
@@ -205,44 +215,59 @@ export default function SessionPage() {
       <main className="container mx-auto px-6 py-8">
         {session.status === "idle" ? (
           // Idle State
-          <div className="max-w-xl mx-auto text-center py-16">
-            <div className="h-16 w-16 rounded-full border-2 border-primary flex items-center justify-center mx-auto mb-8">
-              <ArrowLeft className="h-8 w-8 text-primary rotate-180" />
+          <div className="max-w-2xl mx-auto py-12">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 mb-6">
+                <Play className="h-7 w-7 text-primary ml-1" />
+              </div>
+              <h2 className="font-serif text-3xl md:text-4xl mb-3">
+                Pronto per iniziare?
+              </h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Premi il pulsante qui sopra per iniziare una nuova sessione.
+                Un cliente virtuale con personalità unica ti accoglierà.
+              </p>
             </div>
-            <h2 className="font-serif text-3xl mb-4">
-              Pronto per iniziare?
-            </h2>
-            <p className="text-muted-foreground mb-10">
-              Premi il pulsante qui sopra per iniziare una nuova sessione.
-              Un cliente virtuale con personalità casuale ti accoglierà.
-            </p>
-            <div className="p-6 rounded-lg border bg-card text-left">
-              <h3 className="font-semibold mb-4">Suggerimenti</h3>
-              <ul className="text-muted-foreground space-y-3">
-                <li className="flex items-start gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  Tieni premuto <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono border">K</kbd> per parlare
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  Usa Chrome o Edge per la migliore esperienza
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  Parla chiaramente e attendi la risposta del cliente
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                  Osserva il pannello psicografico per adattare il tuo approccio
-                </li>
+
+            <div className="paper-card rounded-lg p-6 corner-accent">
+              <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground mb-5 flex items-center gap-2">
+                <span className="h-1 w-1 rounded-full bg-primary" />
+                Come funziona
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  { key: "K", text: "Tieni premuto per parlare" },
+                  { key: "Browser", text: "Usa Chrome o Edge per la migliore esperienza" },
+                  { key: "Voice", text: "Parla chiaramente e attendi la risposta" },
+                  { key: "OCEAN", text: "Osserva il pannello psicografico" },
+                ].map((item, i) => (
+                  <li key={item.key} className="flex items-start gap-4">
+                    <div className="number-marker flex-shrink-0 h-6 w-6 text-xs">
+                      <span>{i + 1}</span>
+                    </div>
+                    <div className="pt-0.5">
+                      {item.key === "K" ? (
+                        <span className="text-sm text-muted-foreground">
+                          Tieni premuto{" "}
+                          <kbd className="px-1.5 py-0.5 bg-muted rounded text-xs font-mono border">
+                            K
+                          </kbd>{" "}
+                          per parlare
+                        </span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">{item.text}</span>
+                      )}
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         ) : (
           // Active/Ended State
-          <div className="grid lg:grid-cols-[1fr_350px] gap-6">
+          <div className="grid lg:grid-cols-[1fr_320px] gap-6">
             {/* Left Column */}
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Persona Card */}
               <PersonaCard
                 persona={session.persona}
@@ -250,7 +275,7 @@ export default function SessionPage() {
               />
 
               {/* Conversation Panel */}
-              <div className="h-[400px]">
+              <div className="h-[380px] lg:h-[420px]">
                 <ConversationPanel
                   messages={session.messages}
                   interimTranscript={isListening ? interimTranscript : undefined}
@@ -275,26 +300,31 @@ export default function SessionPage() {
 
               {/* Session Ended Message */}
               {session.status === "ended" && (
-                <div className="text-center p-8 rounded-lg border bg-card">
-                  <div className="h-12 w-12 rounded-full border-2 border-primary flex items-center justify-center mx-auto mb-6">
-                    <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
+                <div className="relative rounded-lg border bg-card overflow-hidden">
+                  <div className="h-1 bg-gradient-to-r from-green-500 via-green-400 to-green-500" />
+                  <div className="p-8 text-center">
+                    <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl bg-green-500/10 border border-green-500/20 mb-5">
+                      <CheckCircle className="h-7 w-7 text-green-600" />
+                    </div>
+                    <h3 className="font-serif text-xl mb-2">Sessione completata</h3>
+                    <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+                      Hai completato la conversazione con{" "}
+                      <span className="font-medium text-foreground">
+                        {session.persona?.name}
+                      </span>
+                      . Rivedi il profilo psicografico emerso.
+                    </p>
+                    <Button onClick={handleRestart} className="gap-2">
+                      <RotateCcw className="h-4 w-4" />
+                      Nuova sessione
+                    </Button>
                   </div>
-                  <h3 className="font-serif text-xl mb-3">Sessione terminata</h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Hai completato la conversazione con <span className="font-medium text-foreground">{session.persona?.name}</span>.
-                    Rivedi il profilo psicografico emerso durante l&apos;interazione.
-                  </p>
-                  <Button onClick={handleRestart} className="gap-2">
-                    Inizia nuova sessione
-                  </Button>
                 </div>
               )}
             </div>
 
             {/* Right Column - Psychographic Panel */}
-            <div className="lg:h-[calc(100vh-200px)] lg:sticky lg:top-24">
+            <div className="lg:h-[calc(100vh-160px)] lg:sticky lg:top-24">
               <PsychographicPanel
                 traits={session.revealedTraits}
                 signals={session.traitSignals}
