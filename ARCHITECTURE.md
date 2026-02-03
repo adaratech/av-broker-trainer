@@ -153,19 +153,22 @@ The application uses a distinctive, handcrafted design language that feels uniqu
 - **Organic shapes**: Blob shapes and asymmetric elements add visual interest
 - **Layered depth**: Multiple shadow layers and gradients create dimension
 - **Crafted details**: Corner accents, stamps, and custom decorations
-- **Unified green palette**: Deep forest green (HSL 158) with warm accents
+- **Italian-inspired palette**: Olive-to-emerald green (HSL 152) with warm terracotta/ochre accents
+- **Hand-crafted feel**: Brushstroke underlines, staggered layouts, offset shadows
+- **Asymmetric layouts**: Breaking typical grid patterns for more human, less AI-generated appearance
 
 ### Design Tokens (globals.css)
 
 | Token | Purpose |
 |-------|---------|
-| `--primary` | Primary brand color (forest green, HSL 158 64% 28%) |
-| `--accent` | Light green for backgrounds (HSL 158 35% 90%) |
-| `--background` | Off-white with subtle green tint (HSL 140 15% 97%) |
-| `--card` | Pure white card surfaces |
-| `--muted` | Subdued backgrounds (HSL 140 10% 93%) |
-| `--green-50` to `--green-700` | Extended green scale |
-| `--warm-50` to `--warm-200` | Warm accent colors |
+| `--primary` | Primary brand color (olive green, HSL 152 55% 26%) |
+| `--accent` | Light green for backgrounds (HSL 152 25% 88%) |
+| `--background` | Off-white with subtle warmth (HSL 80 8% 98%) |
+| `--card` | Cream-tinted card surfaces (HSL 60 20% 99%) |
+| `--muted` | Subdued backgrounds (HSL 80 12% 92%) |
+| `--green-50` to `--green-700` | Extended green scale (olive to emerald) |
+| `--warm-50` to `--warm-400` | Warm terracotta/ochre accents (Italian feel) |
+| `--cream-50` to `--cream-200` | Cream tones for paper-like textures |
 
 ### Typography
 
@@ -190,6 +193,19 @@ The application uses a distinctive, handcrafted design language that feels uniqu
 | `.message-user` | User message bubble with asymmetric corners |
 | `.message-assistant` | Assistant message with left border accent |
 | `.btn-lift` | Button hover lift with shadow |
+| `.brushstroke` | Hand-painted underline effect with warm color |
+| `.tile-border` | Italian tile pattern top border |
+| `.card-organic` | Card with cream gradient and left accent border |
+| `.number-handwritten` | Large faded background numbers (serif) |
+| `.badge-vintage` | Warm-toned badge with ochre accents |
+| `.dash-accent` | Diagonal decorative dash element |
+| `.quote-float` | Floating quotation mark decoration |
+| `.stripe-accent` | Diagonal stripe pattern overlay |
+| `.shadow-offset` | Offset shadow for depth effect |
+| `.divider-squiggle` | SVG squiggle line divider |
+| `.lift-warm` | Hover lift with warm glow shadow |
+| `.text-gradient-warm` | Green to warm gradient text |
+| `.notch-corner` | Clipped corner with accent fill |
 
 ### Animations
 
@@ -381,3 +397,4 @@ npx tsx scripts/test-edge-cases.ts
 | 2026-01-10 | Add push-to-talk K key | Hands-free voice input control | Hold K to record, release to send; works alongside mic button |
 | 2026-01-10 | Editorial UI redesign | Make UI more unique, less "AI-generated" looking | Added Instrument Serif for headings, removed gradients/glows/floating orbs, unified to single green palette, cleaner borders |
 | 2026-01-12 | Distinctive UI overhaul | Make design more unique and handcrafted | Added organic blob shapes, paper textures, corner accents, stamps, stepped shadows, asymmetric message bubbles, custom progress bars, lift animations |
+| 2026-02-03 | Italian-inspired design refresh | Make landing page less AI-generated looking | Added warm terracotta/ochre accent palette, brushstroke underlines, staggered card layouts, asymmetric section headers, vintage badges, organic number markers, cream backgrounds |

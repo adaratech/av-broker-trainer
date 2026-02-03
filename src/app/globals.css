@@ -4,42 +4,49 @@
 
 @layer base {
   :root {
-    /* Deep forest green palette - more refined */
-    --background: 140 15% 97%;
-    --foreground: 150 30% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 150 30% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 150 30% 10%;
-    --primary: 158 64% 28%;
-    --primary-foreground: 60 30% 96%;
-    --secondary: 45 25% 95%;
-    --secondary-foreground: 150 20% 35%;
-    --muted: 140 10% 93%;
-    --muted-foreground: 150 10% 45%;
-    --accent: 158 35% 90%;
-    --accent-foreground: 158 64% 22%;
-    --destructive: 0 72% 51%;
+    /* Distinctive Italian-inspired green palette */
+    --background: 80 8% 98%;
+    --foreground: 160 40% 8%;
+    --card: 60 20% 99%;
+    --card-foreground: 160 40% 8%;
+    --popover: 60 20% 99%;
+    --popover-foreground: 160 40% 8%;
+    --primary: 152 55% 26%;
+    --primary-foreground: 50 40% 96%;
+    --secondary: 40 30% 94%;
+    --secondary-foreground: 160 30% 25%;
+    --muted: 80 12% 92%;
+    --muted-foreground: 160 15% 40%;
+    --accent: 152 25% 88%;
+    --accent-foreground: 152 55% 20%;
+    --destructive: 4 72% 46%;
     --destructive-foreground: 0 0% 100%;
-    --border: 140 15% 85%;
-    --input: 140 15% 85%;
-    --ring: 158 64% 28%;
-    --radius: 0.375rem;
+    --border: 80 15% 82%;
+    --input: 80 15% 82%;
+    --ring: 152 55% 26%;
+    --radius: 0.5rem;
 
-    /* Extended palette */
-    --green-50: 158 50% 96%;
-    --green-100: 158 45% 90%;
-    --green-200: 158 40% 80%;
-    --green-300: 158 45% 65%;
-    --green-400: 158 55% 45%;
-    --green-500: 158 64% 28%;
-    --green-600: 158 70% 22%;
-    --green-700: 158 75% 16%;
+    /* Rich green spectrum - olive to emerald */
+    --green-50: 90 30% 97%;
+    --green-100: 100 35% 92%;
+    --green-200: 120 30% 82%;
+    --green-300: 140 35% 60%;
+    --green-400: 148 45% 40%;
+    --green-500: 152 55% 26%;
+    --green-600: 155 60% 20%;
+    --green-700: 158 65% 14%;
 
-    /* Warm accent for contrast */
-    --warm-50: 35 60% 97%;
-    --warm-100: 35 55% 92%;
-    --warm-200: 32 50% 82%;
+    /* Warm terracotta/ochre accent - Italian feel */
+    --warm-50: 32 70% 97%;
+    --warm-100: 30 65% 90%;
+    --warm-200: 28 55% 75%;
+    --warm-300: 24 50% 55%;
+    --warm-400: 20 55% 42%;
+
+    /* Cream tones for paper feel */
+    --cream-50: 45 50% 98%;
+    --cream-100: 42 45% 95%;
+    --cream-200: 40 35% 88%;
   }
 
   .dark {
@@ -479,4 +486,234 @@
 
 .btn-lift:active {
   transform: translateY(0);
+}
+
+/* === DISTINCTIVE DESIGN ELEMENTS === */
+
+/* Brushstroke underline - hand-painted feel */
+.brushstroke {
+  position: relative;
+  display: inline;
+}
+
+.brushstroke::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -4%;
+  right: -4%;
+  height: 0.35em;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--warm-200)) 8%,
+    hsl(var(--warm-200)) 92%,
+    transparent 100%
+  );
+  transform: skewX(-8deg) rotate(-1deg);
+  opacity: 0.7;
+  z-index: -1;
+}
+
+/* Italian tile pattern border */
+.tile-border {
+  position: relative;
+}
+
+.tile-border::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    hsl(var(--primary)) 0px,
+    hsl(var(--primary)) 8px,
+    transparent 8px,
+    transparent 12px,
+    hsl(var(--warm-300)) 12px,
+    hsl(var(--warm-300)) 20px,
+    transparent 20px,
+    transparent 24px
+  );
+  opacity: 0.6;
+}
+
+/* Organic card with torn paper effect */
+.card-organic {
+  position: relative;
+  background: linear-gradient(
+    165deg,
+    hsl(var(--cream-50)) 0%,
+    hsl(var(--card)) 40%,
+    hsl(var(--cream-100)) 100%
+  );
+  box-shadow:
+    0 1px 2px hsl(var(--foreground) / 0.03),
+    0 4px 8px hsl(var(--foreground) / 0.04),
+    0 8px 16px hsl(var(--foreground) / 0.02);
+  border: 1px solid hsl(var(--border) / 0.6);
+}
+
+.card-organic::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary) / 0.4) 100%
+  );
+  border-radius: 4px 0 0 4px;
+}
+
+/* Handwritten number style */
+.number-handwritten {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1;
+  color: hsl(var(--primary) / 0.15);
+  position: absolute;
+  top: -0.5rem;
+  left: -0.5rem;
+  transform: rotate(-8deg);
+  user-select: none;
+}
+
+/* Vintage badge */
+.badge-vintage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: hsl(var(--warm-400));
+  background: linear-gradient(
+    135deg,
+    hsl(var(--warm-50)) 0%,
+    hsl(var(--warm-100)) 100%
+  );
+  border: 1px solid hsl(var(--warm-200));
+  border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--warm-50)),
+    0 1px 2px hsl(var(--foreground) / 0.05);
+}
+
+/* Decorative dash */
+.dash-accent {
+  display: inline-block;
+  width: 2rem;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--warm-300)), hsl(var(--primary)));
+  border-radius: 2px;
+  transform: skewX(-12deg);
+}
+
+/* Floating quote marks */
+.quote-float::before {
+  content: '"';
+  position: absolute;
+  top: -1rem;
+  left: -0.5rem;
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  line-height: 1;
+  color: hsl(var(--primary) / 0.08);
+}
+
+/* Diagonal stripe accent */
+.stripe-accent {
+  position: relative;
+  overflow: hidden;
+}
+
+.stripe-accent::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20px;
+  width: 80px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    hsl(var(--primary) / 0.03) 4px,
+    hsl(var(--primary) / 0.03) 8px
+  );
+}
+
+/* Offset shadow for depth */
+.shadow-offset {
+  box-shadow:
+    6px 6px 0 -2px hsl(var(--background)),
+    6px 6px 0 0 hsl(var(--primary) / 0.15);
+}
+
+/* Squiggle divider */
+.divider-squiggle {
+  position: relative;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 6 Q 10 0, 20 6 T 40 6' stroke='%232D6A4F' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.2'/%3E%3C/svg%3E") repeat-x center;
+}
+
+/* Hover lift with warm glow */
+.lift-warm {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lift-warm:hover {
+  transform: translateY(-3px) rotate(-0.5deg);
+  box-shadow:
+    0 8px 25px hsl(var(--primary) / 0.12),
+    0 4px 10px hsl(var(--warm-300) / 0.08);
+}
+
+/* Text gradient - green to warm */
+.text-gradient-warm {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--green-400)) 50%,
+    hsl(var(--warm-400)) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Notch corner */
+.notch-corner {
+  position: relative;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    0 100%
+  );
+}
+
+.notch-corner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    hsl(var(--primary) / 0.1) 50%
+  );
 }
